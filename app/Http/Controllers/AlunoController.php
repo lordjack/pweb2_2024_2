@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Aluno;
+use App\Models\CategoriaFormacao;
 use Illuminate\Http\Request;
 
 class AlunoController extends Controller
@@ -12,39 +13,48 @@ class AlunoController extends Controller
         //select * from
         $dados = Aluno::All();
 
-        return view('aluno.list',[
-            'dados'=>$dados
+        return view('aluno.list', [
+            'dados' => $dados
         ]);
     }
 
     function create()
     {
-        return view('aluno.form');
+        $categorias = CategoriaFormacao::All();
+
+        return view('aluno.form',[
+            'categorias'=> $categorias,
+        ]);
     }
 
-    function store(Request $request){
+    function store(Request $request)
+    {
 
         $request->validate(
             [
-                'nome'=>'required|max:130|min:3',
-                'cpf'=>'required|max:14',
-                'telefone'=>'required|max:20',
-            ],[
-                'nome.required' =>" O :attribute é obrigatório",
-                'nome.max' =>" O máximo de caracteres para :attribute é 130",
-                'nome.min' =>" O mínimo de caracteres para :attribute é 3",
-                'cpf.required' =>" O :attribute é obrigatório",
-                'cpf.max' =>" O máximo de caracteres para :attribute é 14",
-                'telefone.required' =>" O :attribute é obrigatório",
-                'telefone.max' =>" O máximo de caracteres para :attribute é 20",
-            ]
+                'nome' => 'required|max:130|min:3',
+                'cpf' => 'required|max:14',
+                'telefone' => 'required|max:20',
+                'categoria_id' => 'required',
+            ],
+            [
+                'nome.required' => " O :attribute é obrigatório",
+                'nome.max' => " O máximo de caracteres para :attribute é 130",
+                'nome.min' => " O mínimo de caracteres para :attribute é 3",
+                'cpf.required' => " O :attribute é obrigatório",
+                'cpf.max' => " O máximo de caracteres para :attribute é 14",
+                'telefone.required' => " O :attribute é obrigatório",
+                'telefone.max' => " O máximo de caracteres para :attribute é 20",
+                'categoria_id.required' => " A categoria é obrigatório",
+                ]
         );
 
         //$data = $request->all();
         $data = [
-            'nome'=> $request->nome,
-            'cpf'=> $request->cpf,
-            'telefone'=> $request->telefone,
+            'nome' => $request->nome,
+            'cpf' => $request->cpf,
+            'telefone' => $request->telefone,
+            'categoria_id' => $request->categoria_id,
         ];
 
         Aluno::create($data);
@@ -56,41 +66,76 @@ class AlunoController extends Controller
     {
         $dado = Aluno::find($id);
 
+        $categorias = CategoriaFormacao::All();
+
         return view('aluno.form', [
-            'dado' => $dado
+            'dado' => $dado,
+            'categorias'=>$categorias,
         ]);
     }
 
-    function update(Request $request, $id){
+    function update(Request $request, $id)
+    {
 
         $request->validate(
             [
-                'nome'=>'required|max:130|min:3',
-                'cpf'=>'required|max:14',
-                'telefone'=>'required|max:20',
-            ],[
-                'nome.required' =>" O :attribute é obrigatório",
-                'nome.max' =>" O máximo de caracteres para :attribute é 130",
-                'nome.min' =>" O mínimo de caracteres para :attribute é 3",
-                'cpf.required' =>" O :attribute é obrigatório",
-                'cpf.max' =>" O máximo de caracteres para :attribute é 14",
-                'telefone.required' =>" O :attribute é obrigatório",
-                'telefone.max' =>" O máximo de caracteres para :attribute é 20",
-            ]
+                'nome' => 'required|max:130|min:3',
+                'cpf' => 'required|max:14',
+                'telefone' => 'required|max:20',
+                'categoria_id' => 'required',
+            ],
+            [
+                'nome.required' => " O :attribute é obrigatório",
+                'nome.max' => " O máximo de caracteres para :attribute é 130",
+                'nome.min' => " O mínimo de caracteres para :attribute é 3",
+                'cpf.required' => " O :attribute é obrigatório",
+                'cpf.max' => " O máximo de caracteres para :attribute é 14",
+                'telefone.required' => " O :attribute é obrigatório",
+                'telefone.max' => " O máximo de caracteres para :attribute é 20",
+                'categoria_id.required' => " A categoria é obrigatório",
+                ]
         );
 
         //$data = $request->all();
         $data = [
-            'nome'=> $request->nome,
-            'cpf'=> $request->cpf,
-            'telefone'=> $request->telefone,
+            'nome' => $request->nome,
+            'cpf' => $request->cpf,
+            'telefone' => $request->telefone,
+            'categoria_id' => $request->categoria_id,
         ];
 
         Aluno::updateOrCreate(
-            ['id'=>$id], $data
+            ['id' => $id],
+            $data
         );
 
         return redirect('aluno');
     }
+
+    public function destroy($id)
+    {
+
+        $aluno = Aluno::findOrFail($id);
+
+        $aluno->delete();
+
+        return redirect('aluno');
+    }
+
+    public function search(Request $request)
+    {
+        if (!empty($request->valor)) {
+            $dados = Aluno::where(
+                $request->tipo,
+                'like',
+                "%$request->valor%"
+
+            )->get();
+        } else {
+            $dados = Aluno::All();
+        }
+        return view('aluno.list', ['dados' => $dados]);
+    }
+
 
 }

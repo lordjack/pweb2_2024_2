@@ -22,6 +22,8 @@ Route::get('/', function () {
 Route::get('/aluno', [AlunoController::class,'index'])
     ->name('aluno.form');
 */
-
+Route::post('aluno/search',
+    [AlunoController::class,'search'])
+    ->name('aluno.search');
 Route::resource('aluno',
     AlunoController::class);
