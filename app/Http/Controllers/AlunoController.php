@@ -36,6 +36,7 @@ class AlunoController extends Controller
                 'cpf' => 'required|max:14',
                 'telefone' => 'required|max:20',
                 'categoria_id' => 'required',
+                'imagem' => 'nullable|image|mimes:png,jpeg,jpg',
             ],
             [
                 'nome.required' => " O :attribute é obrigatório",
@@ -46,16 +47,25 @@ class AlunoController extends Controller
                 'telefone.required' => " O :attribute é obrigatório",
                 'telefone.max' => " O máximo de caracteres para :attribute é 20",
                 'categoria_id.required' => " A categoria é obrigatório",
+                'imagem.image'=>'Deve ser enviado uma imagem',
+                'imagem.mimes'=>'A imagem deve ser da extesão PNG,JPEG ou JPG',
                 ]
         );
 
-        //$data = $request->all();
-        $data = [
-            'nome' => $request->nome,
-            'cpf' => $request->cpf,
-            'telefone' => $request->telefone,
-            'categoria_id' => $request->categoria_id,
-        ];
+        $data = $request->all();
+        $imagem = $request->file('imagem');
+
+        if($imagem){
+            $nome_arquivo=
+            date('YmdHis').".".$imagem->getClientOriginalExtension();
+            $diretorio = "imagem/aluno/";
+
+            $imagem->storeAs($diretorio,
+                $nome_arquivo,'public');
+
+            $data['imagem'] = $diretorio.$nome_arquivo;
+        }
+
 
         Aluno::create($data);
 
@@ -83,6 +93,7 @@ class AlunoController extends Controller
                 'cpf' => 'required|max:14',
                 'telefone' => 'required|max:20',
                 'categoria_id' => 'required',
+                'imagem' => 'nullable|image|mimes:png,jpeg,jpg',
             ],
             [
                 'nome.required' => " O :attribute é obrigatório",
@@ -93,16 +104,24 @@ class AlunoController extends Controller
                 'telefone.required' => " O :attribute é obrigatório",
                 'telefone.max' => " O máximo de caracteres para :attribute é 20",
                 'categoria_id.required' => " A categoria é obrigatório",
+                'imagem.image'=>'Deve ser enviado uma imagem',
+                'imagem.mimes'=>'A imagem deve ser da extesão PNG,JPEG ou JPG',
                 ]
         );
 
-        //$data = $request->all();
-        $data = [
-            'nome' => $request->nome,
-            'cpf' => $request->cpf,
-            'telefone' => $request->telefone,
-            'categoria_id' => $request->categoria_id,
-        ];
+        $data = $request->all();
+        $imagem = $request->file('imagem');
+
+        if($imagem){
+            $nome_arquivo=
+            date('YmdHis').".".$imagem->getClientOriginalExtension();
+            $diretorio = "imagem/aluno/";
+
+            $imagem->storeAs($diretorio,
+                $nome_arquivo,'public');
+
+            $data['imagem'] = $diretorio.$nome_arquivo;
+        }
 
         Aluno::updateOrCreate(
             ['id' => $id],
