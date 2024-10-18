@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Aluno;
 use App\Models\CategoriaFormacao;
 use Illuminate\Http\Request;
+use Storage;
 
 class AlunoController extends Controller
 {
@@ -133,8 +134,11 @@ class AlunoController extends Controller
 
     public function destroy($id)
     {
-
         $aluno = Aluno::findOrFail($id);
+
+        if($aluno->hasFile('imagem')){
+            Storage::delete($aluno->imagem);
+        }
 
         $aluno->delete();
 
