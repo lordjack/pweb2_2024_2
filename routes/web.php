@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AlunoController;
+use App\Http\Controllers\CursoController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -27,3 +28,16 @@ Route::post('aluno/search',
     ->name('aluno.search');
 Route::resource('aluno',
     AlunoController::class);
+
+Route::post('curso/search',
+    [CursoController::class,'search'])
+    ->name('curso.search');
+Route::resource('curso',
+CursoController::class);
+
+
+
+
+
+
+

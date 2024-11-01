@@ -10,151 +10,91 @@ class CursoController extends Controller
     function index()
     {
         //select * from
-        $dados = Aluno::All();
+        $dados = Curso::All();
 
-        return view('aluno.list', [
+        return view('curso.list', [
             'dados' => $dados
         ]);
     }
 
     function create()
     {
-        $categorias = CategoriaFormacao::All();
-
-        return view('aluno.form',[
-            'categorias'=> $categorias,
-        ]);
+        return view('curso.form');
     }
 
     function store(Request $request)
     {
-
         $request->validate(
             [
-                'nome' => 'required|max:130|min:3',
-                'cpf' => 'required|max:14',
-                'telefone' => 'required|max:20',
-                'categoria_id' => 'required',
-                'imagem' => 'nullable|image|mimes:png,jpeg,jpg',
+                'nome' => 'required|max:150|min:3',
             ],
             [
                 'nome.required' => " O :attribute é obrigatório",
                 'nome.max' => " O máximo de caracteres para :attribute é 130",
                 'nome.min' => " O mínimo de caracteres para :attribute é 3",
-                'cpf.required' => " O :attribute é obrigatório",
-                'cpf.max' => " O máximo de caracteres para :attribute é 14",
-                'telefone.required' => " O :attribute é obrigatório",
-                'telefone.max' => " O máximo de caracteres para :attribute é 20",
-                'categoria_id.required' => " A categoria é obrigatório",
-                'imagem.image'=>'Deve ser enviado uma imagem',
-                'imagem.mimes'=>'A imagem deve ser da extesão PNG,JPEG ou JPG',
-                ]
+            ]
         );
 
         $data = $request->all();
-        $imagem = $request->file('imagem');
 
-        if($imagem){
-            $nome_arquivo=
-            date('YmdHis').".".$imagem->getClientOriginalExtension();
-            $diretorio = "imagem/aluno/";
+        Curso::create($data);
 
-            $imagem->storeAs($diretorio,
-                $nome_arquivo,'public');
-
-            $data['imagem'] = $diretorio.$nome_arquivo;
-        }
-
-
-        Aluno::create($data);
-
-        return redirect('aluno');
+        return redirect('curso');
     }
 
     function edit($id)
     {
-        $dado = Aluno::find($id);
+        $dado = Curso::find($id);
 
-        $categorias = CategoriaFormacao::All();
-
-        return view('aluno.form', [
+        return view('curso.form', [
             'dado' => $dado,
-            'categorias'=>$categorias,
         ]);
     }
 
     function update(Request $request, $id)
     {
-
         $request->validate(
             [
-                'nome' => 'required|max:130|min:3',
-                'cpf' => 'required|max:14',
-                'telefone' => 'required|max:20',
-                'categoria_id' => 'required',
-                'imagem' => 'nullable|image|mimes:png,jpeg,jpg',
+                'nome' => 'required|max:150|min:3',
             ],
             [
                 'nome.required' => " O :attribute é obrigatório",
                 'nome.max' => " O máximo de caracteres para :attribute é 130",
                 'nome.min' => " O mínimo de caracteres para :attribute é 3",
-                'cpf.required' => " O :attribute é obrigatório",
-                'cpf.max' => " O máximo de caracteres para :attribute é 14",
-                'telefone.required' => " O :attribute é obrigatório",
-                'telefone.max' => " O máximo de caracteres para :attribute é 20",
-                'categoria_id.required' => " A categoria é obrigatório",
-                'imagem.image'=>'Deve ser enviado uma imagem',
-                'imagem.mimes'=>'A imagem deve ser da extesão PNG,JPEG ou JPG',
-                ]
+            ]
         );
 
         $data = $request->all();
-        $imagem = $request->file('imagem');
 
-        if($imagem){
-            $nome_arquivo=
-            date('YmdHis').".".$imagem->getClientOriginalExtension();
-            $diretorio = "imagem/aluno/";
-
-            $imagem->storeAs($diretorio,
-                $nome_arquivo,'public');
-
-            $data['imagem'] = $diretorio.$nome_arquivo;
-        }
-
-        Aluno::updateOrCreate(
+        Curso::updateOrCreate(
             ['id' => $id],
             $data
         );
 
-        return redirect('aluno');
+        return redirect('curso');
     }
 
     public function destroy($id)
     {
-        $aluno = Aluno::findOrFail($id);
+        $curso = Curso::findOrFail($id);
 
-        if($aluno->hasFile('imagem')){
-            Storage::delete($aluno->imagem);
-        }
+        $curso->delete();
 
-        $aluno->delete();
-
-        return redirect('aluno');
+        return redirect('curso');
     }
 
     public function search(Request $request)
     {
         if (!empty($request->valor)) {
-            $dados = Aluno::where(
+            $dados = Curso::where(
                 $request->tipo,
                 'like',
                 "%$request->valor%"
 
             )->get();
         } else {
-            $dados = Aluno::All();
+            $dados = Curso::All();
         }
-        return view('aluno.list', ['dados' => $dados]);
+        return view('curso.list', ['dados' => $dados]);
     }
 }
