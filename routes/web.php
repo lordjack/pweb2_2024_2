@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\AlunoController;
 use App\Http\Controllers\CursoController;
+use App\Http\Controllers\ProfessorController;
+use App\Http\Controllers\TurmaController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -32,8 +34,23 @@ Route::resource('aluno',
 Route::post('curso/search',
     [CursoController::class,'search'])
     ->name('curso.search');
+
 Route::resource('curso',
 CursoController::class);
+
+Route::post('professor/search',
+    [ProfessorController::class,'search'])
+    ->name('professor.search');
+
+Route::resource('professor',
+ProfessorController::class);
+
+Route::post('turma/search',
+    [TurmaController::class,'search'])
+    ->name('turma.search');
+
+Route::resource('turma',
+TurmaController::class);
 
 
 
