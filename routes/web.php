@@ -28,6 +28,11 @@ Route::get('/aluno', [AlunoController::class,'index'])
 Route::post('aluno/search',
     [AlunoController::class,'search'])
     ->name('aluno.search');
+
+Route::get('aluno/report',
+    [AlunoController::class,'report'])
+    ->name('aluno.report');
+
 Route::resource('aluno',
     AlunoController::class);
 

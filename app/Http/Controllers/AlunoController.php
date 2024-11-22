@@ -6,6 +6,7 @@ use App\Models\Aluno;
 use App\Models\CategoriaFormacao;
 use Illuminate\Http\Request;
 use Storage;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 class AlunoController extends Controller
 {
@@ -23,8 +24,8 @@ class AlunoController extends Controller
     {
         $categorias = CategoriaFormacao::All();
 
-        return view('aluno.form',[
-            'categorias'=> $categorias,
+        return view('aluno.form', [
+            'categorias' => $categorias,
         ]);
     }
 
@@ -48,27 +49,45 @@ class AlunoController extends Controller
                 'telefone.required' => " O :attribute é obrigatório",
                 'telefone.max' => " O máximo de caracteres para :attribute é 20",
                 'categoria_id.required' => " A categoria é obrigatório",
-                'imagem.image'=>'Deve ser enviado uma imagem',
-                'imagem.mimes'=>'A imagem deve ser da extesão PNG,JPEG ou JPG',
-                ]
+                'imagem.image' => 'Deve ser enviado uma imagem',
+                'imagem.mimes' => 'A imagem deve ser da extesão PNG,JPEG ou JPG',
+            ]
         );
 
         $data = $request->all();
         $imagem = $request->file('imagem');
 
-        if($imagem){
-            $nome_arquivo=
-            date('YmdHis').".".$imagem->getClientOriginalExtension();
+        if ($imagem) {
+            $nome_arquivo =
+                date('YmdHis') . "." . $imagem->getClientOriginalExtension();
             $diretorio = "imagem/aluno/";
 
-            $imagem->storeAs($diretorio,
-                $nome_arquivo,'public');
+            $imagem->storeAs(
+                $diretorio,
+                $nome_arquivo,
+                'public'
+            );
 
-            $data['imagem'] = $diretorio.$nome_arquivo;
+            $data['imagem'] = $diretorio . $nome_arquivo;
         }
 
+/*
+       $user = User::create($data);
+       $posts = ['Postagem 1', 'Postagem 2', 'Postagem 3', ];
 
-        Aluno::create($data);
+       foreach($posts as $item){
+
+            $detalhePostagem = [
+                'titulo'=>"Noticia campus chapeco",
+                'texto'=>"SEPEI no campus"];
+
+            Post::create([
+                'user_id' => $user->id,
+                'titulo'=>"Noticia campus chapeco",
+                'texto'=>"SEPEI no campus"
+            ]);
+       }
+*/
 
         return redirect('aluno');
     }
@@ -81,7 +100,7 @@ class AlunoController extends Controller
 
         return view('aluno.form', [
             'dado' => $dado,
-            'categorias'=>$categorias,
+            'categorias' => $categorias,
         ]);
     }
 
@@ -105,23 +124,26 @@ class AlunoController extends Controller
                 'telefone.required' => " O :attribute é obrigatório",
                 'telefone.max' => " O máximo de caracteres para :attribute é 20",
                 'categoria_id.required' => " A categoria é obrigatório",
-                'imagem.image'=>'Deve ser enviado uma imagem',
-                'imagem.mimes'=>'A imagem deve ser da extesão PNG,JPEG ou JPG',
-                ]
+                'imagem.image' => 'Deve ser enviado uma imagem',
+                'imagem.mimes' => 'A imagem deve ser da extesão PNG,JPEG ou JPG',
+            ]
         );
 
         $data = $request->all();
         $imagem = $request->file('imagem');
 
-        if($imagem){
-            $nome_arquivo=
-            date('YmdHis').".".$imagem->getClientOriginalExtension();
+        if ($imagem) {
+            $nome_arquivo =
+                date('YmdHis') . "." . $imagem->getClientOriginalExtension();
             $diretorio = "imagem/aluno/";
 
-            $imagem->storeAs($diretorio,
-                $nome_arquivo,'public');
+            $imagem->storeAs(
+                $diretorio,
+                $nome_arquivo,
+                'public'
+            );
 
-            $data['imagem'] = $diretorio.$nome_arquivo;
+            $data['imagem'] = $diretorio . $nome_arquivo;
         }
 
         Aluno::updateOrCreate(
@@ -136,7 +158,7 @@ class AlunoController extends Controller
     {
         $aluno = Aluno::findOrFail($id);
 
-        if($aluno->hasFile('imagem')){
+        if ($aluno->hasFile('imagem')) {
             Storage::delete($aluno->imagem);
         }
 
@@ -158,6 +180,20 @@ class AlunoController extends Controller
             $dados = Aluno::All();
         }
         return view('aluno.list', ['dados' => $dados]);
+    }
+
+
+    public function report()
+    {
+        $alunos = Aluno::All();
+
+        $data = [
+            'titulo' => "Relatório Listagem de Alunos",
+            'alunos' => $alunos,
+        ];
+
+        $pdf = Pdf::loadView('aluno.report', $data);
+        return $pdf->download('relatorio_aluno.pdf');
     }
 
 

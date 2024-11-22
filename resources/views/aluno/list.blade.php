@@ -20,6 +20,7 @@
                 <div class="col-4">
                     <button type="submit" class="btn btn-primary">Buscar</button>
                     <a class="btn btn-success" href="{{ url('aluno/create') }}">Novo</a>
+                    <a class="btn btn-danger" href="{{ url('aluno/report') }}">Gerar Relatório</a>
                 </div>
             </div>
         </form>
