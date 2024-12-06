@@ -96,6 +96,10 @@ Código-Fonte do Projeto desenvolvido durante as aulas de programação web 2 co
 **Clonar o projeto**  
 `git clone URL_PROJETO`
 
+**Configurar o email e nome do repositorio**  
+`git config --global user.email "you@example.com"`\
+`git config --global user.name "Your Name"`
+
 **Adicionar todos arquivos para serem versionados**  
 `git add .`
 
