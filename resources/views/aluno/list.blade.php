@@ -18,9 +18,9 @@
                     <input type="text" name="valor" class="form-control">
                 </div>
                 <div class="col-4">
-                    <button type="submit" class="btn btn-primary">Buscar</button>
-                    <a class="btn btn-success" href="{{ url('aluno/create') }}">Novo</a>
-                    <a class="btn btn-danger" href="{{ url('aluno/report') }}">Gerar Relatório</a>
+                    <button type="submit" class="btn btn-primary"><i class="fa-solid fa-magnifying-glass"></i> Buscar</button>
+                    <a class="btn btn-success" href="{{ url('aluno/create') }}"><i class="fa-solid fa-plus"></i> Novo</a>
+                    <a class="btn btn-danger" href="{{ url('aluno/report') }}"><i class="fa-regular fa-file-pdf"></i> Gerar Relatório</a>
                 </div>
             </div>
         </form>
@@ -51,13 +51,13 @@
                         <td>{{ $item->cpf }}</td>
                         <td>{{ $item->telefone }}</td>
                         <td>{{ $item->categoria->nome ?? '' }}</td>
-                        <td><a href="{{ route('aluno.edit', $item->id) }}">Editar</a></td>
+                        <td><a class="btn btn-warning" href="{{ route('aluno.edit', $item->id) }}" title="Editar"><i class="fa-solid fa-pen-to-square"></i></a></td>
                         <td>
                             <form action=" {{ route('aluno.destroy', $item->id) }}" method="post">
                                 @method('DELETE')
                                 @csrf
-                                <button type="submit" onclick="return confirm('Deseja remover o registro?')">
-                                    Deletar
+                                <button class="btn btn-danger" type="submit" onclick="return confirm('Deseja remover o registro?')" title="Remover">
+                                    <i class="fa-solid fa-trash"></i>
                                 </button>
                             </form>
                         </td>
